@@ -73,10 +73,22 @@ def gcode_generator(data, w, h, powerh, t_speed, s_speed, startx, starty, filena
     print("Generating G-code...")
     outfile = open(filename + '.gcode', 'w')
     #out = open(filename + '.txt', 'w')
-    outfile.write(
-        ";Image width: " + w + " pix\n;Image height: " + h + " pix\n;Laser max power: " + powerh + " %\n;Travel speed: "
-        + t_speed + " mm/min\n;Scan speed: " + s_speed + " mm/min\n;X start position: " + startx + " mm\n;Y start position: "
-        + starty + " mm\nG21 ; Units in mm\nG90 ; Absolute positioning \nG28 X Y; Home X and Y axes \nG1 F" + t_speed + " X" + startx + " Y" + starty + "\nG1 F" + s_speed + "\nG91\nM0 Start?\n")
+    outfile.write\
+(f""";Image width: {w} pix
+;Image height: {h} pix
+;Laser max power: {powerh} %
+;Travel speed: {t_speed} mm/min
+;Scan speed: {s_speed} mm/min
+;X start position: {startx} mm
+;Y start position: {starty} mm
+G21 ; Units in mm
+G90 ; Absolute positioning 
+G28 X Y; Home X and Y axes 
+G1 F{t_speed} X{startx} Y{starty}
+G1 F{s_speed}
+G91
+M0 Start?
+""")
     h = int(h)
     w = int(w)
     powerh = int(powerh)
@@ -101,16 +113,34 @@ def gcode_generator(data, w, h, powerh, t_speed, s_speed, startx, starty, filena
 (f"""
 G1 F{t_speed}
 M106 S{(str(round(float(pixel)*(powerh/100))))}
-G1 X0.1""")
+G1 X0.1
+""")
             else:
-                outfile.write("\nG1 F" + s_speed + "\nM106 S" + (str(round(float(pixel) * (powerh / 100)))) + "\nG1 X0.1")
-            #out.write(str(pixel)+" ")
-            # outfile.write("\nM106 S" + str(round(float(pixel) * (power / 100))) + "\nG1 X0.1")
+                outfile.write\
+(f"""
+G1 F{s_speed}
+M106 S{(str(round(float(pixel) * (powerh / 100))))}
+G1 X0.1
+""")
+
             i += 1
-        outfile.write(
-            "\nM107\nG4 P20\nG1 F" + t_speed + " X-" + str(w / 10) + " Y0.1\nG4 P20\n\nG1 F" + s_speed + ";")
+        outfile.write\
+(f"""
+M107
+G4 P20
+G1 F{t_speed} X-{str(w / 10)} Y0.1
+G4 P20
+
+G1 F{s_speed};
+""")
         k += 1
-    outfile.write("\nM107\nG90\nG1 F" + t_speed + " X0 Y235\nM84")
+    outfile.write\
+(f"""
+M107
+G90
+G1 F{t_speed} X0 Y235
+M84
+""")
     file.close()
     outfile.close()
     #out.close()
