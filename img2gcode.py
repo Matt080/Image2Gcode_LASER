@@ -35,7 +35,7 @@ def Image_processing(inv, new_w, in_img, skip):
     print("Image processing finished!")
     return x, y, fil
 
-def view(inv, new_w, in_img):
+def View(inv, new_w, in_img):
     new_w = str(new_w)
     new_w = int(new_w)
     new_w = new_w * 10
@@ -52,7 +52,7 @@ def view(inv, new_w, in_img):
     img.show()
     return
 
-def save(inv, new_w, in_img):
+def Save(inv, new_w, in_img):
     new_w = str(new_w)
     new_w = int(new_w)
     new_w = new_w * 10
@@ -69,7 +69,7 @@ def save(inv, new_w, in_img):
     img.save('Output.png')
     return
 
-def gcode_generator(data, w, h, powerh, t_speed, s_speed, startx, starty, filename):
+def Gcode_generator(data, w, h, powerh, t_speed, s_speed, startx, starty, filename):
     print("Generating G-code...")
     outfile = open(filename + '.gcode', 'w')
     #out = open(filename + '.txt', 'w')
@@ -209,7 +209,7 @@ while True:  # Event Loop
             print("Filename incorrect!")
         else:
             x, y, file = Image_processing(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'], values['_SKIP_'])
-            gcode_generator(file, str(x), str(y), values['_POWERH_'], values['_TRAVELSPEED_'], values['_SCANSPEED_'],
+            Gcode_generator(file, str(x), str(y), values['_POWERH_'], values['_TRAVELSPEED_'], values['_SCANSPEED_'],
                             values['_STARTX_'], values['_STARTY_'], values['_FILENAME_'])
 
     if event is "View grayscale":
@@ -219,7 +219,7 @@ while True:  # Event Loop
         elif len(values['_WIDTH_']) == 0:
             print("Width data incorrect!")
         else:
-            view(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'])
+            View(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'])
 
     if event is "Save grayscale":
 
@@ -228,4 +228,4 @@ while True:  # Event Loop
         elif len(values['_WIDTH_']) == 0:
             print("Width data incorrect!")
         else:
-            save(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'])
+            Save(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'])
