@@ -6,7 +6,7 @@ def Image_processing(inv, new_w, in_img, skip):
     # read width in mm and convert it to mm
     print("Creating grayscale inverted image...")
     new_w = int(new_w)
-    new_w = new_w * 10
+    new_w = new_w * 20
     skip = int(skip)
     img = Image.open(str(in_img)).convert('L')
     img_w = img.width
@@ -38,7 +38,7 @@ def Image_processing(inv, new_w, in_img, skip):
 def View(inv, new_w, in_img):
     new_w = str(new_w)
     new_w = int(new_w)
-    new_w = new_w * 10
+    new_w = new_w * 20
     img = Image.open(str(in_img)).convert('L')
     img_w = img.width
     img_h = img.height
@@ -55,7 +55,7 @@ def View(inv, new_w, in_img):
 def Save(inv, new_w, in_img):
     new_w = str(new_w)
     new_w = int(new_w)
-    new_w = new_w * 10
+    new_w = new_w * 20
     img = Image.open(str(in_img)).convert('L')
     img_w = img.width
     img_h = img.height
@@ -113,14 +113,14 @@ M0 Start?
 (f"""
 G1 F{t_speed}
 M106 S{(str(round(float(pixel)*(powerh/100))))}
-G1 X0.1
+G1 X0.05
 """)
             else:
                 outfile.write\
 (f"""
 G1 F{s_speed}
 M106 S{(str(round(float(pixel) * (powerh / 100))))}
-G1 X0.1
+G1 X0.05
 """)
 
             i += 1
@@ -128,7 +128,7 @@ G1 X0.1
 (f"""
 M107
 G4 P20
-G1 F{t_speed} X-{str(w / 10)} Y0.1
+G1 F{t_speed} X-{str(w / 20)} Y0.05
 G4 P20
 
 G1 F{s_speed};
