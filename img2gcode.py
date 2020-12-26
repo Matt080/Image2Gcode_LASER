@@ -2,7 +2,7 @@ from PIL import Image, ImageOps
 import PySimpleGUI as sg
 from io import StringIO
 
-def Image_processing(inv, new_w, in_img, skip):
+def Image_processing(inv, flp, new_w, in_img, skip):
     # read width in mm and convert it to mm
     print("Creating grayscale inverted image...")
     new_w = int(new_w)
@@ -16,8 +16,9 @@ def Image_processing(inv, new_w, in_img, skip):
     img = img.resize((new_w, new_h), Image.ANTIALIAS)
     if inv is True:
         inverted_image = ImageOps.invert(img)
-        inverted_image = ImageOps.mirror(inverted_image)
         img = inverted_image
+    if flp is True:
+        img = ImageOps.mirror(img)
     x = img.width
     y = img.height
     data = list(img.getdata())
@@ -35,7 +36,7 @@ def Image_processing(inv, new_w, in_img, skip):
     print("Image processing finished!")
     return x, y, fil
 
-def View(inv, new_w, in_img):
+def View(inv, flp, new_w, in_img):
     new_w = str(new_w)
     new_w = int(new_w)
     new_w = new_w * 20
@@ -47,12 +48,13 @@ def View(inv, new_w, in_img):
     img = img.resize((new_w, new_h), Image.ANTIALIAS)
     if inv is True:
         inverted_image = ImageOps.invert(img)
-        inverted_image = ImageOps.mirror(inverted_image)
         img = inverted_image
+    if flp is True:
+        img = ImageOps.mirror(img)
     img.show()
     return
 
-def Save(inv, new_w, in_img):
+def Save(inv, flp, new_w, in_img):
     new_w = str(new_w)
     new_w = int(new_w)
     new_w = new_w * 20
@@ -64,8 +66,9 @@ def Save(inv, new_w, in_img):
     img = img.resize((new_w, new_h), Image.ANTIALIAS)
     if inv is True:
         inverted_image = ImageOps.invert(img)
-        inverted_image = ImageOps.mirror(inverted_image)
         img = inverted_image
+    if flp is True:
+        img = ImageOps.mirror(img)
     img.save('Output.png')
     return
 
@@ -103,12 +106,13 @@ M0 Start?
                 pixhelp3 = remap[(i+(k * w)) + 3]
                 pixhelp2 = remap[(i+(k * w)) + 2]
                 pixhelp1 = remap[(i+(k * w)) + 1]
+                pixhelp = remap[(i+(k * w))]
                 pixhelpm1 = remap[(i+(k * w)) - 1]
                 pixhelpm2 = remap[(i+(k * w)) - 2]
             else:
                 pixhelp1 = pixhelp2 = pixhelp3 = pixhelp4 = pixhelp5 = pixhelpm2 = pixhelpm1 = 1
 
-            if int(pixhelp5) == 0 and int(pixhelp4) == 0 and int(pixhelp3) == 0 and int(pixhelp2) == 0 and int(pixhelp1) == 0 and int(pixhelpm1) == 0 and int(pixhelpm2) == 0:
+            if int(pixhelp5) == 0 and int(pixhelp4) == 0 and int(pixhelp3) == 0 and int(pixhelp2) == 0 and int(pixhelp1) == 0 and int(pixhelpm1) == 0 and int(pixhelpm2) == 0 and int(pixhelp) == 0:
                 outfile.write\
 (f"""
 G1 F{t_speed}
@@ -153,6 +157,7 @@ layout = [[sg.Input(key='_FILEBROWSE_', enable_events=True, visible=False)],
           [sg.Text("Select image", size=(30, 1)), sg.Output(size=(50, 2)), sg.FileBrowse(target='_FILEBROWSE_')],
           [sg.Text("Set width (height autocalculated)[mm]: ", size=(30, 1)), sg.Input(key='_WIDTH_', size=(10, 1))],
           [sg.Checkbox('Invert image colours', key='_INV_', default=True)],
+          [sg.Checkbox('Flip image', key='_FLP_', default=True)],
           [sg.Text("Skip under values [0-255]: ", size=(30, 1)), sg.Input(key='_SKIP_', size=(10, 1), default_text=40)],
           [sg.Text("Set max power [%]:", size=(30, 1)), sg.Input(key='_POWERH_', size=(10, 1), default_text=50)],
           [sg.Text("Travel speed [mm/min]:", size=(30, 1)), sg.Input(key='_TRAVELSPEED_', size=(10, 1), default_text=10000)],
@@ -208,7 +213,7 @@ while True:  # Event Loop
         elif len(values['_FILENAME_']) == 0:
             print("Filename incorrect!")
         else:
-            x, y, file = Image_processing(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'], values['_SKIP_'])
+            x, y, file = Image_processing(values['_INV_'], values['_FLP_'], values['_WIDTH_'], values['_FILEBROWSE_'], values['_SKIP_'])
             Gcode_generator(file, str(x), str(y), values['_POWERH_'], values['_TRAVELSPEED_'], values['_SCANSPEED_'],
                             values['_STARTX_'], values['_STARTY_'], values['_FILENAME_'])
 
@@ -219,7 +224,7 @@ while True:  # Event Loop
         elif len(values['_WIDTH_']) == 0:
             print("Width data incorrect!")
         else:
-            View(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'])
+            View(values['_INV_'], values['_FLP_'], values['_WIDTH_'], values['_FILEBROWSE_'])
 
     if event is "Save grayscale":
 
@@ -228,4 +233,4 @@ while True:  # Event Loop
         elif len(values['_WIDTH_']) == 0:
             print("Width data incorrect!")
         else:
-            Save(values['_INV_'], values['_WIDTH_'], values['_FILEBROWSE_'])
+            Save(values['_INV_'], values['_FLP_'], values['_WIDTH_'], values['_FILEBROWSE_'])
